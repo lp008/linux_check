@@ -279,6 +279,26 @@ echo -e "\033[34m[-]各tmp目录文件：\033[0m"
 ls /tmp /var/tmp /dev/shm -alht | tee -a $filename
 echo -e "\n" | tee -a $filename
 
+# SSH KEY敏感信息
+echo -e "\033[34m[-]SSH key信息：\033[0m" | tee -a $filename
+sshkey=${HOME}/.ssh/authorized_keys
+if [ -e "${sshkey}" ]; then
+    cat ${sshkey} | tee -a $filename
+else
+    echo -e "SSH key文件不存在\n" | tee -a $filename
+fi
+echo -e "\n" | tee -a $filename
+
+# 显示Rootkit内核模块信息
+echo -e "\033[34m[-]Rootkit内核模块信息：\033[0m" | tee -a $filename
+kernel=$(cat /proc/kallsyms | egrep 'hide_tcp4_port|hidden_files|hide_tcp6_port')
+if [ -n "$kernel" ]; then
+	echo "存在内核敏感函数！ 疑似Rootkit内核模块" | tee -a $filename
+else
+	echo "未找到内核敏感函数" | tee -a $filename
+fi
+echo -e "\n" | tee -a $filename
+
 # netstat-恶意挖矿进程
 echo -e "\033[34m[-]netstat查找恶意挖矿进程：\033[0m"
 netstat -anp | grep 185.71.65.238 | awk '{print}'
