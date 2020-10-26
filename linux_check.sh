@@ -9,8 +9,6 @@ echo "
                                         Powered by Vampire                                           
 
 "
-#read -p "Press any key to continue." var
-
 # 验证是否为root权限
 echo -e "\033[34m[-]环境检测：\033[0m"
 if [ $UID -ne 0 ]; then
@@ -50,7 +48,6 @@ printf "\n"
 
 # 内存占用TOP 15
 cpu=$(ps aux | grep -v ^'USER' | sort -rn -k3 | head -15) 2>/dev/null
-#echo -e "\e[00;31m[*]内存占用 TOP10:  \e[00m\n${cpu}\n"
 echo -e "\033[34m[-]内存占用 TOP 15：\033[0m\n${cpu}\n"
 
 # 查看passwd下的用户，是否存在可疑用户
