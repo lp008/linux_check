@@ -7,4 +7,5 @@ centos / ubuntu / redhat / debian 环境均jbok
 sh 或 ./ <文件名>即可
 # 脚本特点：
 无需额外安装其他第三方组件
+
 整合了市面上常见的恶意挖矿行为特征
