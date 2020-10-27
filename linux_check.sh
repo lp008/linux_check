@@ -67,7 +67,7 @@ printf "\n"
 
 # 显示处于连接状态的端口号和响应的进程
 port=`netstat -antup`
-echo -e "\033[34m[-]netstat端口连接状态:：\033[0m"
+echo -e "\033[34m[-]Netstat端口连接状态:：\033[0m"
 echo -e "$port"
 printf "\n"
 
@@ -102,7 +102,7 @@ arp -n -a | tee -a $filename
 echo -e "\n" | tee -a $filename
 
 # 显示IPTABLES防火墙信息
-echo -e "\033[34m[-]IPTABLES防火墙信息:\033[0m" | tee -a $filename
+echo -e "\033[34m[-]IPTABLES配置信息:\033[0m" | tee -a $filename
 iptables -L | tee -a $filename
 echo -e "\n" | tee -a $filename
 
@@ -175,7 +175,7 @@ fi
 printf "\n"
 
 # secure日志分析
-echo -e "\033[34m[-]secure日志分析-登录成功情况：\033[0m"
+echo -e "\033[34m[-]Secure日志分析-登录成功情况：\033[0m"
 loginsuccess=$(more /var/log/secure* | grep "Accepted" | awk '{print $1,$2,$3,$9,$11}')
 if [ -n "$loginsuccess" ];then
 	(echo "[*]日志中分析到以下用户成功登录:" && echo "$loginsuccess") 
@@ -186,7 +186,7 @@ else
 fi
 printf "\n"
 
-echo -e "\033[34m[-]secure日志分析-登录失败情况：\033[0m"
+echo -e "\033[34m[-]Secure日志分析-登录失败情况：\033[0m"
 loginfailed=$(more /var/log/secure* | grep "Failed" | awk '{print $1,$2,$3,$9,$11}')
 if [ -n "$loginfailed" ];then
 	(echo "[!]日志中发现以下登录失败的情况:" && echo "$loginfailed") |  tee -a $danger_file 
@@ -197,7 +197,7 @@ else
 fi
 printf "\n"
 
-echo -e "\033[34m[-]secure日志分析-本机登录情况：\033[0m"
+echo -e "\033[34m[-]Secure日志分析-本机登录情况：\033[0m"
 systemlogin=$(more /var/log/secure* | grep -E "sshd:session.*session opened" | awk '{print $1,$2,$3,$11}')
 if [ -n "$systemlogin" ];then
 	(echo "[*]本机登录情况:" && echo "$systemlogin")
@@ -207,7 +207,7 @@ else
 fi
 printf "\n"
 
-echo -e "\033[34m[-]secure日志分析-新增用户情况：\033[0m"
+echo -e "\033[34m[-]Secure日志分析-新增用户情况：\033[0m"
 newusers=$(more /var/log/secure* | grep "new user"  | awk -F '[=,]' '{print $1,$2}' | awk '{print $1,$2,$3,$9}')
 if [ -n "$newusers" ];then
 	(echo "[!]日志中发现新增用户:" && echo "$newusers")
@@ -218,7 +218,7 @@ fi
 printf "\n"
 
 # message日志分析
-echo -e "\033[34m[-]message日志分析-文件传输情况：\033[0m"
+echo -e "\033[34m[-]Message日志分析-文件传输情况：\033[0m"
 zmodem=$(more /var/log/message* | grep "ZMODEM:.*BPS")
 if [ -n "$zmodem" ];then
 	(echo "[!]传输文件情况:" && echo "$zmodem")
@@ -227,7 +227,7 @@ else
 fi
 printf "\n"
 
-echo -e "\033[34m[-]cron日志分析-定时下载：\033[0m"
+echo -e "\033[34m[-]Cron日志分析-定时下载：\033[0m"
 cron_download=$(more /var/log/cron* | grep -E "wget|curl|.systemd")
 if [ -n "$cron_download" ];then
         (echo "[!]定时下载情况:" && echo "$cron_download")
@@ -236,7 +236,7 @@ else
 fi
 printf "\n"
 
-echo -e "\033[34m[-]cron日志分析-定时执行脚本：\033[0m"
+echo -e "\033[34m[-]Cron日志分析-定时执行脚本：\033[0m"
 cron_shell=$(more /var/log/cron* | grep -E "\.py|\.sh|\.pl") 
 if [ -n "$cron_shell" ];then
 	(echo "[!]发现定时执行脚本:" && echo "$cron_shell")
@@ -246,7 +246,7 @@ fi
 printf "\n"
 
 # btmp日志分析
-echo -e "\033[34m[-]btmp日志分析-错误登录日志分析：\033[0m"
+echo -e "\033[34m[-]Btmp日志分析-错误登录日志分析：\033[0m"
 lastb=$(lastb)
 if [ -n "$lastb" ];then
 	(echo "[！]错误登录日志如下:" && echo "$lastb")
@@ -256,7 +256,7 @@ fi
 printf "\n"
 
 # lastlog日志分析
-echo -e "\033[34m[-]lastlog日志分析-最后一次登录：\033[0m"
+echo -e "\033[34m[-]Lastlog日志分析-最后一次登录：\033[0m"
 lastlog=$(lastlog)
 if [ -n "$lastlog" ];then
 	(echo "[！]所有用户最后一次登录日志如下:" && echo "$lastlog")
@@ -266,7 +266,7 @@ fi
 printf "\n"
 
 # wtmp日志分析
-echo -e "\033[34m[-]wtmp日志分析-用户登录分析：\033[0m"
+echo -e "\033[34m[-]Wtmp日志分析-用户登录分析：\033[0m"
 lasts=$(last | grep pts | grep -vw :0)
 if [ -n "$lasts" ];then
 	(echo "[！]历史上登录到本机的用户如下:" && echo "$lasts")
@@ -303,7 +303,7 @@ fi
 echo -e "\n" | tee -a $filename
 
 # netstat-恶意挖矿进程
-echo -e "\033[34m[-]netstat查找恶意挖矿进程：\033[0m"
+echo -e "\033[34m[-]Netstat查找恶意挖矿进程：\033[0m"
 declare -A netlist
 netlist=([a1]=`netstat -anp | grep 185.71.65.238 | awk '{print}'` [a2]=`netstat -anp | grep 140.82.52.87 | awk '{print}'` [a3]=`netstat -antp | grep '46.243.253.15' | grep 'ESTABLISHED\|SYN_SENT' | awk '{print}'` [a4]=`netstat -antp | grep '176.31.6.16' | grep 'ESTABLISHED\|SYN_SENT' | awk '{print}'` [a5]=`netstat -anp | grep :443 | awk '{print}'` [a6]=`netstat -anp | grep :23 | awk '{print}'` [a7]=`netstat -anp | grep :143 | awk '{print}'` [a8]=`netstat -anp | grep :8080 | awk '{print}'` [a9]=`netstat -anp | grep :2222 | awk '{print}'` [a10]=`netstat -anp | grep :3333 | awk '{print}'` [a11]=`netstat -anp | grep :3389 | awk '{print}'` [a12]=`netstat -anp | grep :4444 | awk '{print}'` [a13]=`netstat -anp | grep :5555 | awk '{print}'` [a14]=`netstat -anp | grep :6666 | awk '{print}'` [a15]=`netstat -anp | grep :6665 | awk '{print}'` [a16]=`netstat -anp | grep :6667 | awk '{print}'` [a17]=`netstat -anp | grep :7777 | awk '{print}'` [a18]=`netstat -anp | grep :8444 | awk '{print}'` [a19]=`netstat -anp | grep :3347 | awk '{print}'` [a20]=`netstat -anp | grep :14433 | awk '{print}'`)
 for a in $(echo ${!netlist[*]});
@@ -327,7 +327,7 @@ fi
 printf "\n"
 
 # ps-恶意挖矿进程
-echo -e "\033[34m[-]ps查找恶意挖矿进程：\033[0m"
+echo -e "\033[34m[-]Ps查找恶意挖矿进程：\033[0m"
 declare -A pslist
 pslist=([p1]=`ps aux | grep -v grep | grep ':3333' | awk '{print}' | xargs -I % echo %` [p2]=`ps aux | grep -v grep | grep ':5555' | awk '{print}' | xargs -I % echo %` [p3]=`ps aux | grep -v grep | grep 'kworker -c\\' | awk '{print}' | xargs -I % echo %` [p4]=`ps aux | grep -v grep | grep 'log_' | awk '{print}' | xargs -I % echo %` [p5]=`ps aux | grep -v grep | grep 'systemten' | awk '{print}' | xargs -I % echo %` [p6]=`ps aux | grep -v grep | grep 'voltuned' | awk '{print}' | xargs -I % echo %` [p7]=`ps aux | grep -v grep | grep 'darwin' | awk '{print}' | xargs -I % echo %` [p8]=`ps aux | grep -v grep | grep '/tmp/dl' | awk '{print}' | xargs -I % echo %` [p9]=`ps aux | grep -v grep | grep '/tmp/ddg' | awk '{print}' | xargs -I % echo %` [p10]=`ps aux | grep -v grep | grep '/tmp/pprt' | awk '{print}' | xargs -I % echo %` [p11]=`ps aux | grep -v grep | grep '/tmp/ppol' | awk '{print}' | xargs -I % echo %` [p12]=`ps aux | grep -v grep | grep '/tmp/65ccE*' | awk '{print}' | xargs -I % echo %` [p13]=`ps aux | grep -v grep | grep '/tmp/jmx*' | awk '{print}' | xargs -I % echo %` [p14]=`ps aux | grep -v grep | grep '/tmp/2Ne80*' | awk '{print}' | xargs -I % echo %` [p15]=`ps aux | grep -v grep | grep 'IOFoqIgyC0zmf2UR' | awk '{print}' | xargs -I % echo %` [p16]=`ps aux | grep -v grep | grep '45.76.122.92' | awk '{print}' | xargs -I % echo %` [p17]=`ps aux | grep -v grep | grep '51.38.191.178' | awk '{print}' | xargs -I % echo %` [p18]=`ps aux | grep -v grep | grep '51.15.56.161' | awk '{print}' | xargs -I % echo  %` [p19]=`ps aux | grep -v grep | grep '86s.jpg' | awk '{print}' | xargs -I % echo %` [p20]=`ps aux | grep -v grep | grep 'aGTSGJJp' | awk '{print}' | xargs -I % echo %` [p21]=`ps aux | grep -v grep | grep 'nMrfmnRa' | awk '{print}' | xargs -I % echo %` [p22]=`ps aux | grep -v grep | grep 'PuNY5tm2' | awk '{print}' | xargs -I % echo  %` [p23]=`ps aux | grep -v grep | grep 'I0r8Jyyt' | awk '{print}' | xargs -I % echo  %` [p24]=`ps aux | grep -v grep | grep 'AgdgACUD' | awk '{print}' | xargs -I % echo  %` [p25]=`ps aux | grep -v grep | grep 'uiZvwxG8' | awk '{print}' | xargs -I % echo  %` [p26]=`ps aux | grep -v grep | grep 'hahwNEdB' | awk '{print}' | xargs -I % echo  %` [p27]=`ps aux | grep -v grep | grep 'BtwXn5qH' | awk '{print}' | xargs -I % echo  %` [p28]=`ps aux | grep -v grep | grep '3XEzey2T' | awk '{print}' | xargs -I % echo  %` [p29]=`ps aux | grep -v grep | grep 't2tKrCSZ' | awk '{print}' | xargs -I % echo  %` [p30]=`ps aux | grep -v grep | grep 'HD7fcBgg' | awk '{print}' | xargs -I % echo  %` [p31]=`ps aux | grep -v grep | grep 'zXcDajSs' | awk '{print}' | xargs -I % echo  %` [p32]=`ps aux | grep -v grep | grep '3lmigMo' | awk '{print}' | xargs -I % echo  %` [p33]=`ps aux | grep -v grep | grep 'AkMK4A2' | awk '{print}' | xargs -I % echo  %` [p34]=`ps aux | grep -v grep | grep 'AJ2AkKe' | awk '{print}' | xargs -I % echo  %` [p35]=`ps aux | grep -v grep | grep 'HiPxCJRS' | awk '{print}' | xargs -I % echo  %` [p36]=`ps aux | grep -v grep | grep 'http_0xCC030' | awk '{print}' | xargs -I % echo  %` [p37]=`ps aux | grep -v grep | grep 'http_0xCC031' | awk '{print}' | xargs -I % echo  %` [p38]=`ps aux | grep -v grep | grep 'http_0xCC032' | awk '{print}' | xargs -I % echo  %` [p39]=`ps aux | grep -v grep | grep 'http_0xCC033' | awk '{print}' | xargs -I % echo  %` [p40]=`ps aux | grep -v grep | grep "C4iLM4L" | awk '{print}' | xargs -I % echo  %` [p41]=`ps aux | grep -v grep | grep 'aziplcr72qjhzvin' | awk '{print}' | xargs -I % echo  %` [p42]=`ps aux | grep -v grep | awk '{ if(substr($11,1,2)=="./" && substr($12,1,2)=="./") print $2 }' | xargs -I % echo  %` [p43]=`ps aux | grep -v grep | grep '/boot/vmlinuz' | awk '{print}' | xargs -I % echo  %` [p44]=`ps aux | grep -v grep | grep "i4b503a52cc5" | awk '{print}' | xargs -I % echo  %` [p45]=`ps aux | grep -v grep | grep "dgqtrcst23rtdi3ldqk322j2" | awk '{print}' | xargs -I % echo  %` [p46]=`ps aux | grep -v grep | grep "2g0uv7npuhrlatd" | awk '{print}' | xargs -I % echo  %` [p47]=`ps aux | grep -v grep | grep "nqscheduler" | awk '{print}' | xargs -I % echo  %` [p48]=`ps aux | grep -v grep | grep "rkebbwgqpl4npmm" | awk '{print}' | xargs -I % echo  %` [p49]=`ps aux | grep -v grep | grep -v aux | grep "]" | awk '$3>10.0{print}' | xargs -I % echo  %` [p50]=`ps aux | grep -v grep | grep "2fhtu70teuhtoh78jc5s" | awk '{print}' | xargs -I % echo  %` [p51]=`ps aux | grep -v grep | grep "0kwti6ut420t" | awk '{print}' | xargs -I % echo  %` [p52]=`ps aux | grep -v grep | grep "44ct7udt0patws3agkdfqnjm" | awk '{print}' | xargs -I % echo  %` [p53]=`ps aux | grep -v grep | grep -v "/" | grep -v "-" | grep -v "_" | awk 'length($11)>19{print}' | xargs -I % echo  %` [p54]=`ps aux | grep -v grep | grep "\[^" | awk '{print}' | xargs -I % echo  %` [p55]=`ps aux | grep -v grep | grep "rsync" | awk '{print}' | xargs -I % echo  %` [p56]=`ps aux | grep -v grep | grep "watchd0g" | awk '{print}' | xargs -I % echo  %` [p57]=`ps aux | grep -v grep | egrep 'wnTKYg|2t3ik|qW3xT.2|ddg' | awk '{print}' | xargs -I % echo  %` [p58]=`ps aux | grep -v grep | grep "158.69.133.18:8220" | awk '{print}' | xargs -I % echo  %` [p59]=`ps aux | grep -v grep | grep "/tmp/java" | awk '{print}' | xargs -I % echo  %` [p60]=`ps aux | grep -v grep | grep 'gitee.com' | awk '{print}' | xargs -I % echo  %` [p61]=`ps aux | grep -v grep | grep '/tmp/java' | awk '{print}' | xargs -I % echo  %` [p62]=`ps aux | grep -v grep | grep '104.248.4.162' | awk '{print}' | xargs -I % echo  %` [p63]=`ps aux | grep -v grep | grep '89.35.39.78' | awk '{print}' | xargs -I % echo  %` [p64]=`ps aux | grep -v grep | grep '/dev/shm/z3.sh' | awk '{print}' | xargs -I % echo  %` [p65]=`ps aux | grep -v grep | grep 'kthrotlds' | awk '{print}' | xargs -I % echo  %` [p66]=`ps aux | grep -v grep | grep 'ksoftirqds' | awk '{print}' | xargs -I % echo  %` [p67]=`ps aux | grep -v grep | grep 'netdns' | awk '{print}' | xargs -I % echo  %` [p68]=`ps aux | grep -v grep | grep 'watchdogs' | awk '{print}' | xargs -I % echo  %` [p69]=`ps aux | grep -v grep | grep 'kdevtmpfsi' | awk '{print}' | xargs -I % echo  %` [p70]=`ps aux | grep -v grep | grep 'kinsing' | awk '{print}' | xargs -I % echo  %` [p71]=`ps aux | grep -v grep | grep 'redis2' | awk '{print}' | xargs -I % echo  %` [p72]=`ps aux | grep -v grep | grep -v root | grep -v dblaunch | grep -v dblaunchs | grep -v dblaunched | grep -v apache2 | grep -v atd | grep -v kdevtmpfsi | awk '$3>80.0{print}' | xargs -I % echo  %` [p73]=`ps aux | grep -v grep | grep -v aux | grep " ps" | awk '{print}' | xargs -I % echo  %` [p74]=`ps aux | grep -v grep | grep "sync_supers" | cut -c 9-15 | xargs -I % echo  %` [p75]=`ps aux | grep -v grep | grep "cpuset" | cut -c 9-15 | xargs -I % echo  %` [p76]=`ps aux | grep -v grep | grep -v aux | grep "x]" | awk '{print}' | xargs -I % echo  %` [p77]=`ps aux | grep -v grep | grep -v aux | grep "sh] <" | awk '{print}' | xargs -I % echo  %` [p78]=`ps aux | grep -v grep | grep -v aux | grep " \[]" | awk '{print}' | xargs -I % echo  %` [p79]=`ps aux | grep -v grep | grep '/tmp/l.sh' | awk '{print}' | xargs -I % echo  %` [p80]=`ps aux | grep -v grep | grep '/tmp/zmcat' | awk '{print}' | xargs -I % echo  %` [p81]=`ps aux | grep -v grep | grep 'hahwNEdB' | awk '{print}' | xargs -I % echo  %` [p82]=`ps aux | grep -v grep | grep 'CnzFVPLF' | awk '{print}' | xargs -I % echo  %` [p83]=`ps aux | grep -v grep | grep 'CvKzzZLs' | awk '{print}' | xargs -I % echo  %` [p84]=`ps aux | grep -v grep | grep 'aziplcr72qjhzvin' | awk '{print}' | xargs -I % echo  %` [p85]=`ps aux | grep -v grep | grep '/tmp/udevd' | awk '{print}' | xargs -I % echo  %` [p86]=`ps aux | grep -v grep | grep 'KCBjdXJsIC1vIC0gaHR0cDovLzg5LjIyMS41Mi4xMjIvcy5zaCApIHwgYmFzaCA' | awk '{print}' | xargs -I % echo  %` [p87]=`ps aux | grep -v grep | grep 'Y3VybCAtcyBodHRwOi8vMTA3LjE3NC40Ny4xNTYvbXIuc2ggfCBiYXNoIC1zaAo' | awk '{print}' | xargs -I % echo  %` [p88]=`ps aux | grep -v grep | grep 'sustse' | awk '{print}' | xargs -I % echo  %` [p89]=`ps aux | grep -v grep | grep 'sustse3' | awk '{print}' | xargs -I % echo  %` [p90]=`ps aux | grep -v grep | grep 'mr.sh' | grep 'wget' | awk '{print}' | xargs -I % echo  %` [p91]=`ps aux | grep -v grep | grep 'mr.sh' | grep 'curl' | awk '{print}' | xargs -I % echo  %` [p92]=`ps aux | grep -v grep | grep '2mr.sh' | grep 'wget' | awk '{print}' | xargs -I % echo  %` [p93]=`ps aux | grep -v grep | grep '2mr.sh' | grep 'curl' | awk '{print}' | xargs -I % echo  %` [p94]=`ps aux | grep -v grep | grep 'cr5.sh' | grep 'wget' | awk '{print}' | xargs -I % echo  %` [p95]=`ps aux | grep -v grep | grep 'cr5.sh' | grep 'curl' | awk '{print}' | xargs -I % echo  %` [p96]=`ps aux | grep -v grep | grep 'logo9.jpg' | grep 'wget' | awk '{print}' | xargs -I % echo  %` [p97]=`ps aux | grep -v grep | grep 'logo9.jpg' | grep 'curl' | awk '{print}' | xargs -I % echo  %` [p98]=`ps aux | grep -v grep | grep 'j2.conf' | awk '{print}' | xargs -I % echo  %` [p99]=`ps aux | grep -v grep | grep 'luk-cpu' | grep 'wget' | awk '{print}' | xargs -I % echo  %` [p100]=`ps aux | grep -v grep | grep 'luk-cpu' | grep 'curl' | awk '{print}' | xargs -I % echo  %` [p101]=`ps aux | grep -v grep | grep 'ficov' | grep 'wget' | awk '{print}' | xargs -I % echo  %` [p102]=`ps aux | grep -v grep | grep 'ficov' | grep 'curl' | awk '{print}' | xargs -I % echo  %` [p103]=`ps aux | grep -v grep | grep 'he.sh' | grep 'wget' | awk '{print}' | xargs -I % echo  %` [p104]=`ps aux | grep -v grep | grep 'he.sh' | grep 'curl' | awk '{print}' | xargs -I % echo  %` [p105]=`ps aux | grep -v grep | grep 'miner.sh' | grep 'wget' | awk '{print}' | xargs -I % echo  %` [p106]=`ps aux | grep -v grep | grep 'miner.sh' | grep 'curl' | awk '{print}' | xargs -I % echo  %` [p107]=`ps aux | grep -v grep | grep 'nullcrew' | grep 'wget' | awk '{print}' | xargs -I % echo  %` [p108]=`ps aux | grep -v grep | grep 'nullcrew' | grep 'curl' | awk '{print}' | xargs -I % echo  %` [p109]=`ps aux | grep -v grep | grep '107.174.47.156' | awk '{print}' | xargs -I % echo  %` [p110]=`ps aux | grep -v grep | grep '83.220.169.247' | awk '{print}' | xargs -I % echo  %` [p111]=`ps aux | grep -v grep | grep '51.38.203.146' | awk '{print}' | xargs -I % echo  %` [p112]=`ps aux | grep -v grep | grep '144.217.45.45' | awk '{print}' | xargs -I % echo  %` [p113]=`ps aux | grep -v grep | grep '107.174.47.181' | awk '{print}' | xargs -I % echo  %` [p114]=`ps aux | grep -v grep | grep '176.31.6.16' | awk '{print}' | xargs -I % echo  %` [p115]=`ps auxf | grep -v grep | grep "mine.moneropool.com" | awk '{print}' | xargs -I % echo  %` [p116]=`ps auxf | grep -v grep | grep "pool.t00ls.ru" | awk '{print}' | xargs -I % echo  %` [p117]=`ps auxf | grep -v grep | grep "xmr.crypto-pool.fr:8080" | awk '{print}' | xargs -I % echo  %` [p118]=`ps auxf | grep -v grep | grep "xmr.crypto-pool.fr:3333" | awk '{print}' | xargs -I % echo  %` [p119]=`ps auxf | grep -v grep | grep "zhuabcn@yahoo.com" | awk '{print}' | xargs -I % echo  %` [p120]=`ps auxf | grep -v grep | grep "monerohash.com" | awk '{print}' | xargs -I % echo  %` [p121]=`ps auxf | grep -v grep | grep "/tmp/a7b104c270" | awk '{print}' | xargs -I % echo  %` [p122]=`ps auxf | grep -v grep | grep "xmr.crypto-pool.fr:6666" | awk '{print}' | xargs -I % echo  %` [p123]=`ps auxf | grep -v grep | grep "xmr.crypto-pool.fr:7777" | awk '{print}' | xargs -I % echo  %` [p124]=`ps auxf | grep -v grep | grep "xmr.crypto-pool.fr:443" | awk '{print}' | xargs -I % echo  %` [p125]=`ps auxf | grep -v grep | grep "stratum.f2pool.com:8888" | awk '{print}' | xargs -I % echo  %` [p126]=`ps auxf | grep -v grep | grep "xmrpool.eu" | awk '{print}' | xargs -I % echo  %` [p127]=`ps auxf | grep -v grep | grep "kieuanilam.me" | awk '{print}' | xargs -I % echo  %`)
 for s in $(echo ${!pslist[*]});
@@ -351,7 +351,7 @@ fi
 printf "\n"
 
 # pgrep-恶意挖矿进程
-echo -e "\033[34m[-]pgrep查找恶意挖矿进程：\033[0m"
+echo -e "\033[34m[-]Pgrep查找恶意挖矿进程：\033[0m"
 declare -A pglist
 pglist=([pg1]=`pgrep -f monerohash | xargs -I % echo %` [pg2]=`pgrep -f L2Jpbi9iYXN | xargs -I % echo %` [pg3]=`pgrep -f xzpauectgr | xargs -I % echo %` [pg4]=`pgrep -f slxfbkmxtd | xargs -I % echo %` [pg5]=`pgrep -f mixtape | xargs -I % echo %` [pg6]=`pgrep -f addnj | xargs -I % echo %` [pg7]=`pgrep -f 200.68.17.196 | xargs -I % echo %` [pg8]=`pgrep -f IyEvYmluL3NoCgpzUG | xargs -I % echo %` [pg9]=`pgrep -f KHdnZXQgLXFPLSBodHRw | xargs -I % echo %` [pg10]=`pgrep -f FEQ3eSp8omko5nx9e97hQ39NS3NMo6rxVQS3 | xargs -I % echo %` [pg11]=`pgrep -f Y3VybCAxOTEuMTAxLjE4MC43Ni9saW4udHh0IHxzaAo | xargs -I % echo %` [pg12]=`pgrep -f mwyumwdbpq.conf | xargs -I % echo %` [pg13]=`pgrep -f honvbsasbf.conf | xargs -I % echo %` [pg14]=`pgrep -f mqdsflm.cf | xargs -I % echo %` [pg15]=`pgrep -f stratum | xargs -I % echo %` [pg16]=`pgrep -f lower.sh | xargs -I % echo %` [pg17]=`pgrep -f ./ppp | xargs -I % echo %` [pg18]=`pgrep -f cryptonight | xargs -I % echo %` [pg19]=`pgrep -f ./seervceaess | xargs -I % echo %` [pg20]=`pgrep -f ./servceaess | xargs -I % echo %` [pg21]=`pgrep -f ./servceas | xargs -I % echo %` [pg22]=`pgrep -f ./servcesa | xargs -I % echo %` [pg23]=`pgrep -f ./vsp | xargs -I % echo %` [pg24]=`pgrep -f ./jvs | xargs -I % echo %` [pg25]=`pgrep -f ./pvv | xargs -I % echo %` [pg26]=`pgrep -f ./vpp | xargs -I % echo %` [pg27]=`pgrep -f ./pces | xargs -I % echo %` [pg28]=`pgrep -f ./rspce | xargs -I % echo %` [pg29]=`pgrep -f ./haveged | xargs -I % echo %` [pg30]=`pgrep -f ./jiba | xargs -I % echo %` [pg31]=`pgrep -f ./watchbog | xargs -I % echo %` [pg32]=`pgrep -f ./A7mA5gb | xargs -I % echo %` [pg33]=`pgrep -f kacpi_svc | xargs -I % echo %` [pg34]=`pgrep -f kswap_svc | xargs -I % echo %` [pg35]=`pgrep -f kauditd_svc | xargs -I % echo %` [pg36]=`pgrep -f kpsmoused_svc | xargs -I % echo %` [pg37]=`pgrep -f kseriod_svc | xargs -I % echo %` [pg38]=`pgrep -f kthreadd_svc | xargs -I % echo %` [pg39]=`pgrep -f ksoftirqd_svc | xargs -I % echo %` [pg40]=`pgrep -f kintegrityd_svc | xargs -I % echo %` [pg41]=`pgrep -f jawa | xargs -I % echo %` [pg42]=`pgrep -f oracle.jpg | xargs -I % echo %` [pg43]=`pgrep -f 45cToD1FzkjAxHRBhYKKLg5utMGEN | xargs -I % echo %` [pg44]=`pgrep -f 188.209.49.54 | xargs -I % echo %` [pg45]=`pgrep -f 181.214.87.241 | xargs -I % echo %` [pg46]=`pgrep -f etnkFgkKMumdqhrqxZ6729U7bY8pzRjYzGbXa5sDQ | xargs -I % echo %` [pg47]=`pgrep -f 47TdedDgSXjZtJguKmYqha4sSrTvoPXnrYQEq2Lbj | xargs -I % echo %` [pg48]=`pgrep -f etnkP9UjR55j9TKyiiXWiRELxTS51FjU9e1UapXyK | xargs -I % echo %` [pg49]=`pgrep -f servim | xargs -I % echo %` [pg50]=`pgrep -f kblockd_svc | xargs -I % echo %` [pg51]=`pgrep -f native_svc | xargs -I % echo %` [pg52]=`pgrep -f ynn | xargs -I % echo %` [pg53]=`pgrep -f 65ccEJ7 | xargs -I % echo %` [pg54]=`pgrep -f jmxx | xargs -I % echo %` [pg55]=`pgrep -f 2Ne80nA | xargs -I % echo %` [pg56]=`pgrep -f sysstats | xargs -I % echo %` [pg57]=`pgrep -f systemxlv | xargs -I % echo %` [pg58]=`pgrep -f watchbog | xargs -I % echo %` [pg59]=`pgrep -f OIcJi1m | xargs -I % echo %`)
 for g in $(echo ${!pglist[*]});
@@ -363,11 +363,11 @@ do
                 #echo "[*]未发现恶意挖矿进程"
                 for ((i=1;i<=100;i++));
                 do
-                        let x+=$i
+                        let q+=$i
                 done
         fi
 done
-if [ "$x" -ge 0 ];then
+if [ "$q" -ge 0 ];then
         echo "[*]未发现恶意挖矿进程"
 else
         echo ""
@@ -375,7 +375,7 @@ fi
 printf "\n"
 
 # docker-恶意挖矿进程
-echo -e "\033[34m[-]dcoker查找恶意挖矿进程：\033[0m"
+echo -e "\033[34m[-]Docker查找恶意挖矿进程：\033[0m"
 declare -A docklist
 which docker > /dev/null 2>&1
 if [ $? == 0 ];then
