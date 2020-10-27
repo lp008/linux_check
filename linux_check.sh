@@ -107,7 +107,7 @@ echo -e "\n" | tee -a $filename
 
 # 查看历史命令，并显示异常操作
 shell=`cat ~/.bash_history | grep -e "chmod" -e "rm" -e "wget" -e "ssh" -e "tar" -e "zip" -e "scp"`
-echo -e "\033[34m[-]历史命令:：\033[0m"
+echo -e "\033[34m[-]历史高危命令:：\033[0m"
 echo -e "$shell"
 printf "\n"
 
@@ -123,7 +123,8 @@ printf "\n"
 
 # 可能存在的危险启动项
 echo -e "\033[34m[-]危险启动项：\033[0m"
-dangerstarup=$(chkconfig --list | grep -E ":on|启用" | awk '{print $1}' | grep -E "\.(sh|per|py)$")
+#dangerstarup=$(chkconfig --list | grep -E ":on|启用" | awk '{print $1}' | grep -E "\.(sh|per|py)$")
+dangerstarup=$(chkconfig --list | grep -E ":on|启用" | awk '{print $1}' | grep -E "\.(sh|per|py)")
 if [ -n "$dangerstarup" ];then
 	echo "[!]发现危险启动项:" && echo "$dangerstarup"
 else
@@ -143,8 +144,9 @@ printf "\n"
 
 # 可疑定时任务
 echo -e "\033[34m[-]可疑定时任务：\033[0m"
-dangersyscron=$(egrep "((chmod|useradd|groupadd|chattr)|((wget|curl)*\.(sh|pl|py)$))"  /etc/cron*/* /var/spool/cron/*)
-if [ $? -eq 0 ];then
+#dangersyscron=$(egrep "((chmod|useradd|groupadd|chattr)|((wget|curl)*\.(sh|pl|py)$))"  /etc/cron*/* /var/spool/cron/*)
+dangersyscron=$(egrep "((chmod|useradd|groupadd|chattr)|((wget|curl)*\.(sh|pl|py)))"  /etc/cron*/* /var/spool/cron/*)
+if [ -n "$dangersyscron" ];then
 	(echo "[!]发现可疑定时任务：" && echo "$dangersyscron")
 else
 	echo "[*]未发现可疑系统定时任务"
@@ -173,7 +175,7 @@ printf "\n"
 
 # secure日志分析
 echo -e "\033[34m[-]secure日志分析-登录成功情况：\033[0m"
-loginsuccess=$(more /var/log/secure* | grep "Accepted password" | awk '{print $1,$2,$3,$9,$11}')
+loginsuccess=$(more /var/log/secure* | grep "Accepted" | awk '{print $1,$2,$3,$9,$11}')
 if [ -n "$loginsuccess" ];then
 	(echo "[*]日志中分析到以下用户成功登录:" && echo "$loginsuccess") 
 	(echo "[*]登录成功的IP及次数如下：" && grep "Accepted " /var/log/secure* | awk '{print $11}' | sort -nr | uniq -c ) 
@@ -184,11 +186,11 @@ fi
 printf "\n"
 
 echo -e "\033[34m[-]secure日志分析-登录失败情况：\033[0m"
-loginfailed=$(more /var/log/secure* | grep "Failed password" | awk '{print $1,$2,$3,$9,$11}')
+loginfailed=$(more /var/log/secure* | grep "Failed" | awk '{print $1,$2,$3,$9,$11}')
 if [ -n "$loginfailed" ];then
 	(echo "[!]日志中发现以下登录失败的情况:" && echo "$loginfailed") |  tee -a $danger_file 
-	(echo "[!]登录失败的IP及次数如下:" && grep "Failed password" /var/log/secure* | awk '{print $11}' | sort -nr | uniq -c) 
-	(echo "[!]登录失败的用户及次数如下:" && grep "Failed password" /var/log/secure* | awk '{print $9}' | sort -nr | uniq -c) 
+	(echo "[!]登录失败的IP及次数如下:" && grep "Failed" /var/log/secure* | awk '{print $11}' | sort -nr | uniq -c) 
+	(echo "[!]登录失败的用户及次数如下:" && grep "Failed" /var/log/secure* | awk '{print $9}' | sort -nr | uniq -c) 
 else
 	echo "[*]日志中未发现登录失败的情况"
 fi
@@ -225,18 +227,18 @@ fi
 printf "\n"
 
 echo -e "\033[34m[-]cron日志分析-定时下载：\033[0m"
-cron_download=$(more /var/log/cron* | grep "wget|curl")
+cron_download=$(more /var/log/cron* | grep -E "wget|curl|.systemd")
 if [ -n "$cron_download" ];then
-	(echo "[!]定时下载情况:" && echo "$cron_download")
+        (echo "[!]定时下载情况:" && echo "$cron_download")
 else
-	echo "[*]未发现定时下载情况"
+        echo "[*]未发现定时下载情况"
 fi
 printf "\n"
 
 echo -e "\033[34m[-]cron日志分析-定时执行脚本：\033[0m"
-cron_shell=$(more /var/log/cron* | grep -E "\.py$|\.sh$|\.pl$") 
+cron_shell=$(more /var/log/cron* | grep -E "\.py|\.sh|\.pl") 
 if [ -n "$cron_shell" ];then
-	(echo "[!]发现定时执行脚本:" && echo "$cron_download")
+	(echo "[!]发现定时执行脚本:" && echo "$cron_shell")
 else
 	echo "[*]未发现定时下载脚本"
 fi
